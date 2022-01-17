@@ -1,12 +1,29 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { PoolModule } from "./pool/pool.module";
-import { ConfigModule } from "@nestjs/config";
-import EthereumConfig from 'config/ether.config'
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import database from 'config/db.config';
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { WalletEntity } from "./pool/entities/wallet.entity";
+import { TransactionEntity } from "./pool/entities/transaction.entity";
+import { InvestmentEntity } from "./pool/entities/investment.entity";
 
 @Module({
-  imports: [ConfigModule.forRoot({ load: [EthereumConfig], envFilePath: '.development.env' }),
-    PoolModule],
+  imports: [ConfigModule.forRoot({ load: [database], envFilePath: '.development.env' }), PoolModule,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('database.host'),
+        port: configService.get<number>('database.port'),
+        username: configService.get<string>('database.username'),
+        password: configService.get<string>('database.password'),
+        database: configService.get<string>('database.database'),
+        entities: [WalletEntity, TransactionEntity, InvestmentEntity],
+        synchronize: configService.get<boolean>('database.synchronize'),
+      }),
+      inject: [ConfigService],
+    }),],
   controllers: [AppController],
   providers: [],
 })
