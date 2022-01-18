@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Repository, getConnection } from "typeorm";
 import { WalletEntity } from "./entities/wallet.entity";
 import { TransactionEntity } from "./entities/transaction.entity";
 import { InvestmentEntity } from "./entities/investment.entity";
@@ -19,7 +19,7 @@ export class PoolService {
 
   async addWallet(address: string): Promise<boolean> {
     try {
-      await this.walletRepository.save({ address: address })
+      await this.walletRepository.save({ address: address });
       return true;
     }
     catch (e) {
@@ -41,9 +41,9 @@ export class PoolService {
 
   async addTransaction(status: string, message: string, result): Promise<boolean>{
     try {
-      const wallet = await this.walletRepository.findOne({address: result.from})
+      const wallet = await this.walletRepository.findOne({address: result.from});
       await this.transactionRepository.save({status: status, message: message, result: result,
-        wallet: wallet.id, date: new Date()})
+        wallet: wallet, date: new Date()});
       return true;
     }
     catch (e) {
@@ -52,13 +52,28 @@ export class PoolService {
     }
   }
 
-  async invest(address, result): Promise<boolean> {
+  async invest(addr, result): Promise<any> {
     try {
-      const wallet = await this.walletRepository.findOne({address: address})
-      await this.investRepository.save({active: true, walletId: wallet.id,
+      const foundWallet = await this.walletRepository.findOne({address: addr})
+      if (!foundWallet){
+        return "Error! Add your wallet"
+      }
+      if (await this.investRepository.findOne({wallet: foundWallet})){
+        await getConnection()
+            .createQueryBuilder()
+            .update(InvestmentEntity)
+            .set({active: true,
+              createdAtBlock: result.createdAtBlock, updatedAtBlock: result.updatedAtBlock,
+              maticReceived: result.maticReceived, wethBalance: result.wethBalance,
+              avaxBalance: result.avaxBalance, wbtcBalance: result.wbtcBalance, date: new Date()})
+            .where({wallet: foundWallet})
+            .execute();
+        return true;
+      }
+      await this.investRepository.save({active: true, wallet: foundWallet,
         createdAtBlock: result.createdAtBlock, updatedAtBlock: result.updatedAtBlock,
         maticReceived: result.maticReceived, wethBalance: result.wethBalance,
-        avaxBalance: result.avaxBalance, wbtcBalance: result.wbtcBalance})
+        avaxBalance: result.avaxBalance, wbtcBalance: result.wbtcBalance, date: new Date()});
       return true;
     }
     catch (e) {

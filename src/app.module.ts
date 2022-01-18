@@ -7,9 +7,11 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { WalletEntity } from "./pool/entities/wallet.entity";
 import { TransactionEntity } from "./pool/entities/transaction.entity";
 import { InvestmentEntity } from "./pool/entities/investment.entity";
+import {AppService} from "./pool/app.service";
 
 @Module({
-  imports: [ConfigModule.forRoot({ load: [database], envFilePath: '.development.env' }), PoolModule,
+  imports: [
+    ConfigModule.forRoot({ load: [database], envFilePath: '.development.env' }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -23,8 +25,9 @@ import { InvestmentEntity } from "./pool/entities/investment.entity";
         synchronize: configService.get<boolean>('database.synchronize'),
       }),
       inject: [ConfigService],
-    }),],
+    }), PoolModule,
+    ],
   controllers: [AppController],
-  providers: [],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -8,14 +8,14 @@ export class TransactionEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @ManyToOne(() => WalletEntity)
+  @ManyToOne(() => WalletEntity, {eager: true, onDelete: 'CASCADE' })
   @JoinColumn()
-  Wallet: WalletEntity;
+  wallet: WalletEntity;
 
   @Column({ nullable: true })
   status: string;
 
-  @Column()
+  @Column({ nullable: true })
   message: string;
 
   @Column({ type: 'jsonb', default: () => "'[]'" })

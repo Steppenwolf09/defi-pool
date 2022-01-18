@@ -7,9 +7,9 @@ export class InvestmentEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @OneToOne(() => WalletEntity)
+  @OneToOne(() => WalletEntity, {onDelete: 'CASCADE'})
   @JoinColumn()
-  Wallet: WalletEntity;
+  wallet: WalletEntity;
 
   @Column()
   active: boolean;
