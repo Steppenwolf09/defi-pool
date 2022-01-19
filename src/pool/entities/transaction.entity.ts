@@ -1,12 +1,22 @@
-
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, PrimaryColumn} from 'typeorm';
 import { WalletEntity } from './wallet.entity';
-
 
 @Entity()
 export class TransactionEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
+
+  @PrimaryColumn()
+  tx_id: number;
+
+  @Column()
+  chain_id: number;
+
+  @Column()
+  pool_id: number;
+
+  @Column()
+  timestamp: string;
 
   @ManyToOne(() => WalletEntity, {eager: true, onDelete: 'CASCADE' })
   @JoinColumn()
@@ -20,7 +30,4 @@ export class TransactionEntity {
 
   @Column({ type: 'jsonb', default: () => "'[]'" })
   result: object;
-
-  @Column()
-  date: Date;
 }
