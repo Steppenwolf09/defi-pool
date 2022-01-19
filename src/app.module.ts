@@ -7,7 +7,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { WalletEntity } from "./pool/entities/wallet.entity";
 import { TransactionEntity } from "./pool/entities/transaction.entity";
 import { InvestmentEntity } from "./pool/entities/investment.entity";
-import {AppService} from "./pool/app.service";
+
 
 @Module({
   imports: [
@@ -28,6 +28,6 @@ import {AppService} from "./pool/app.service";
     }), PoolModule,
     ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

@@ -1,6 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn} from 'typeorm';
 import { WalletEntity } from './wallet.entity';
-
 
 @Entity()
 export class InvestmentEntity {

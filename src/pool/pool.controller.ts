@@ -1,29 +1,45 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { PoolService } from './pool.service';
+import { WalletService } from './wallet.service';
+import { InvestmentService } from './investment.service';
+import { TransactionService } from './transaction.service';
 
 @Controller('pool')
 export class PoolController {
   constructor(
-    private poolService:PoolService,
+    private walletService: WalletService,
+    private investService: InvestmentService,
+    private transactionService: TransactionService,
   ) {}
 
   @Post('addWallet')
   async addWallet(@Body() params: any): Promise<any> {
-    return this.poolService.addWallet(params.address);
+    return this.walletService.addWallet(
+      params.address,
+      params.walletIndex,
+      params.timestamp,
+    );
   }
 
   @Post('dropWallet')
   async dropWallet(@Body() params: any): Promise<any> {
-    return this.poolService.dropWallet(params.address);
+    return this.walletService.dropWallet(params.address);
   }
 
   @Post('addTransaction')
   async addTransaction(@Body() params: any): Promise<any> {
-    return this.poolService.addTransaction(params.status, params.message, params.result);
+    return this.transactionService.addTransaction(
+      params.status,
+      params.message,
+      params.tx_id,
+      params.chain_id,
+      params.pool_id,
+      params.timestamp,
+      params.result,
+    );
   }
 
   @Post('invest')
   async invest(@Body() params: any): Promise<any> {
-    return this.poolService.invest(params.address, params.result);
+    return this.investService.invest(params.address, params.result);
   }
 }

@@ -1,10 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class WalletEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column()
+  @PrimaryColumn()
+  wallet_index: number;
+
+  @PrimaryColumn()
   address: string;
+
+  @Column()
+  timestamp: string;
 }
