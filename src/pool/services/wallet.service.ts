@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { WalletEntity } from './entities/wallet.entity';
+import { WalletEntity } from '../entities/wallet.entity';
 
 @Injectable()
 export class WalletService {
@@ -18,9 +18,12 @@ export class WalletService {
   ): Promise<any> {
     try {
       if (
-        await this.walletRepository.findOne({
+        (await this.walletRepository.findOne({
           address: address,
-        })
+        })) ||
+        (await this.walletRepository.findOne({
+          wallet_index: walletIndex,
+        }))
       ) {
         return 'This wallet is already exist';
       }

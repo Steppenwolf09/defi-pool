@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, PrimaryColumn} from 'typeorm';
 import { WalletEntity } from './wallet.entity';
+import { ResultTx } from '../interfaces/resultTx.interface';
+
 
 @Entity()
 export class TransactionEntity {
@@ -29,5 +31,5 @@ export class TransactionEntity {
   message: string;
 
   @Column({ type: 'jsonb', default: () => "'[]'" })
-  result: object;
+  result: ResultTx;
 }

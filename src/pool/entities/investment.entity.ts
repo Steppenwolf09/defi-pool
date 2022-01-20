@@ -6,7 +6,7 @@ export class InvestmentEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @OneToOne(() => WalletEntity, {onDelete: 'CASCADE'})
+  @OneToOne(() => WalletEntity, { onDelete: 'CASCADE' })
   @JoinColumn()
   wallet: WalletEntity;
 
